@@ -37,30 +37,34 @@ export const RegisterUser = async (req, res) => {
 }
 
 export const loginUser = async (req, res) => {
-    const {email ,username, password} =  req.body
+    const { email, username, password } = req.body
 
     const user = await userModel.findOne({
-        $or:[
-            {username},{email}
+        $or: [
+            { username }, { email }
         ]
     })
 
-    if(!user){
-        return res.status(401).json({message:"Invalid Credentials"})
+    if (!user) {
+        return res.status(401).json({ message: "Invalid Credentials" })
     }
 
     const isPassValid = await bcrypt.compare(password, user.password)
 
-    if(!isPassValid){
-        return res.status(401).json({message:"Invalid Credentials"})
+    if (!isPassValid) {
+        return res.status(401).json({ message: "Invalid Credentials" })
     }
 
-    const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
-    res.cookie('token', token)
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+    });
 
     res.status(200).json({
-        message:"User logged in successfully",
+        message: "User logged in successfully",
         user
     })
 
@@ -70,14 +74,14 @@ export const updateUser = async (req, res) => {
     try {
         const userId = req.userId;
         const updates = req.body;
-        
+
         // Exclude fields that shouldn't be directly updated
         delete updates.password;
         delete updates.email;
         delete updates._id;
 
         const updatedUser = await userModel.findByIdAndUpdate(userId, updates, { returnDocument: 'after' }).select('-password');
-        
+
         res.status(200).json({
             message: "User updated successfully",
             user: updatedUser
