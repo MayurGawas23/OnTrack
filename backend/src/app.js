@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://on-track-orcin.vercel.app"],
+    origin: ["http://localhost:5173", "https://track-it-mg.vercel.app"],
     credentials: true,
   })
 );
