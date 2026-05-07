@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&amp;family=Newsreader:ital,wght@0,400;0,600;1,400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#e7e2db",
+                        "on-tertiary-container": "#929292",
+                        "primary-fixed": "#d6e3ff",
+                        "on-tertiary-fixed-variant": "#464747",
+                        "on-primary-container": "#8392b0",
+                        "outline": "#75777e",
+                        "on-primary-fixed-variant": "#384762",
+                        "surface": "#fbf9f8",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "tertiary": "#161717",
+                        "primary-fixed-dim": "#b7c7e7",
+                        "on-primary-fixed": "#0a1c34",
+                        "background": "#fbf9f8",
+                        "inverse-on-surface": "#f3f0f0",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#f0eded",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e2e1",
+                        "secondary-fixed-dim": "#cbc6bf",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#615e59",
+                        "surface-variant": "#e4e2e1",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#2a2b2b",
+                        "on-surface-variant": "#44474d",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#67645f",
+                        "inverse-surface": "#303030",
+                        "secondary-container": "#e7e2db",
+                        "surface-bright": "#fbf9f8",
+                        "tertiary-fixed": "#e4e2e2",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#1d1b17",
+                        "tertiary-fixed-dim": "#c7c6c6",
+                        "on-background": "#1b1c1c",
+                        "inverse-primary": "#b7c7e7",
+                        "on-secondary-fixed-variant": "#494642",
+                        "surface-tint": "#4f5f7b",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#eae8e7",
+                        "on-surface": "#1b1c1c",
+                        "error-container": "#ffdad6",
+                        "primary": "#05162e",
+                        "surface-dim": "#dcd9d9",
+                        "primary-container": "#1b2b44",
+                        "outline-variant": "#c5c6ce",
+                        "surface-container-low": "#f6f3f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Newsreader"],
+                        "body-lg": ["Newsreader"],
+                        "headline-md": ["Epilogue"],
+                        "body-md": ["Newsreader"],
+                        "headline-lg": ["Epilogue"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["28px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .paper-texture {
+            background-color: #FFF9F2;
+            background-image: radial-gradient(#1B2B44 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            background-attachment: fixed;
+        }
+        .ink-bleed {
+            filter: blur(0.2px) contrast(1.2);
+        }
+        .wax-seal {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 2px 2px 5px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #8b1a1a, #5a0d0d);
+            border: 4px solid #7a1515;
+        }
+        .notebook-line {
+            border-bottom: 1px solid rgba(27, 43, 68, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="paper-texture text-on-background min-h-screen font-body-md">
+<header class="bg-[#FFF9F2] dark:bg-slate-900 text-[#1B2B44] dark:text-blue-200 docked full-width top-0 border-b-2 border-[#1B2B44] dark:border-blue-800 border-b-2 border-double border-[#1B2B44]/30 flat no-shadows sticky z-50">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-5xl mx-auto">
+<div class="text-2xl font-black italic text-[#1B2B44] dark:text-white">The Daily Ledger</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="font-epilogue text-sm uppercase tracking-widest text-[#1B2B44]/60 hover:text-[#1B2B44] transition-all" href="#">Journal</a>
+<a class="font-epilogue text-sm uppercase tracking-widest text-[#1B2B44]/60 hover:text-[#1B2B44] transition-all" href="#">Habits</a>
+<a class="font-epilogue text-sm uppercase tracking-widest text-[#1B2B44]/60 hover:text-[#1B2B44] transition-all" href="#">Insights</a>
+</nav>
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#1B2B44]/5 p-2 rounded-full transition-all">auto_awesome</span>
+<span class="material-symbols-outlined cursor-pointer text-[#1B2B44] border-b-2 border-[#1B2B44] pb-1 font-bold">account_circle</span>
+</div>
+</div>
+</header>
+<div class="fixed left-0 top-0 h-screen w-64 z-40 py-8 flex flex-col bg-[#FFF9F2] dark:bg-slate-900 text-[#1B2B44] dark:text-blue-200 h-full border-r-2 border-[#1B2B44] dark:border-blue-900 border-r border-[#1B2B44]/20 hidden lg:flex">
+<div class="px-8 mb-12">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 rounded-full wax-seal flex items-center justify-center text-white font-black italic text-xs">DL</div>
+<div class="text-lg font-bold text-[#1B2B44]">Personal Journal</div>
+</div>
+<div class="text-xs opacity-60 font-medium font-epilogue uppercase tracking-tighter">Flow state: Active</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="font-epilogue font-medium text-[#1B2B44]/70 pl-6 py-3 hover:pl-8 transition-all hover:text-[#1B2B44] hover:font-bold" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined">edit_note</span>
+<span>Daily Entry</span>
+</div>
+</a>
+<a class="font-epilogue font-medium text-[#1B2B44]/70 pl-6 py-3 hover:pl-8 transition-all hover:text-[#1B2B44] hover:font-bold" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+<span>Habit Tracker</span>
+</div>
+</a>
+<a class="font-epilogue font-medium text-[#1B2B44]/70 pl-6 py-3 hover:pl-8 transition-all hover:text-[#1B2B44] hover:font-bold" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined">psychology</span>
+<span>Mindfulness AI</span>
+</div>
+</a>
+<a class="font-epilogue font-medium text-[#1B2B44]/70 pl-6 py-3 hover:pl-8 transition-all hover:text-[#1B2B44] hover:font-bold" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined">book</span>
+<span>Archives</span>
+</div>
+</a>
+<a class="font-epilogue font-medium bg-[#1B2B44] text-white rounded-r-full pl-6 py-3 mr-4 transition-all" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+</a>
+</nav>
+</div>
+<main class="lg:ml-64 min-h-screen pt-12 pb-24 px-8">
+<div class="max-w-4xl mx-auto">
+<section class="flex flex-col md:flex-row gap-12 items-start mb-16">
+<div class="relative group">
+<div class="bg-white p-4 shadow-xl rotate-[-2deg] border border-[#1B2B44]/10 hover:rotate-0 transition-transform duration-500">
+<img alt="User Profile" class="w-48 h-48 object-cover grayscale sepia-[.2]" data-alt="Vintage style black and white portrait of a man with subtle film grain and soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNOMbHafew6ATndeiyYvVTbpB6yCNsQEMW7q9PrhnsMuhHj8KBrJciNmN9qOXZRutUtRsTcyrahVfWlzqHAhpvkCDcx7-77O-gdQBAY_oEy-5qIWxI1XHPQTP2nwdcqNUKRh2exigYxDFlbxJFy_y2U4P11nnpTUGpnO0SYvuDZ0VRQ9LESoSUWFwcumPnNXZsgEquSf1uF7Sf9bFvp3797LNWuXwdSC-UPbSPkJIP099N7j-c2giNTBzb4iIVgbHBdhUXCbNGf7D5"/>
+<div class="mt-4 text-center font-label-caps text-label-caps italic text-[#1B2B44]/40">Est. Oct 2023</div>
+</div>
+<div class="absolute -bottom-4 -right-4 w-16 h-16 rounded-full wax-seal flex items-center justify-center text-white/90 border-2 border-white/20 z-10 ink-bleed">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-1 space-y-6">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-1">Arthur Penhaligon</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant italic">"A life unexamined is not worth living."</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="border-2 border-dashed border-[#1B2B44]/20 p-4 rounded-lg">
+<div class="font-label-caps text-label-caps uppercase opacity-50 mb-1">Current Streak</div>
+<div class="font-headline-md text-headline-md text-primary">142 Days</div>
+</div>
+<div class="border-2 border-dashed border-[#1B2B44]/20 p-4 rounded-lg">
+<div class="font-label-caps text-label-caps uppercase opacity-50 mb-1">Journal Entries</div>
+<div class="font-headline-md text-headline-md text-primary">1,024</div>
+</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+<div class="md:col-span-2 space-y-12">
+<div>
+<h2 class="font-headline-md text-headline-md mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">person</span>
+                            Personal Information
+                        </h2>
+<div class="space-y-8">
+<div class="notebook-line pb-2">
+<label class="font-label-caps text-label-caps text-[#1B2B44]/60 block mb-1">Full Name</label>
+<div class="font-body-lg text-body-lg text-primary">Arthur J. Penhaligon</div>
+</div>
+<div class="notebook-line pb-2">
+<label class="font-label-caps text-label-caps text-[#1B2B44]/60 block mb-1">Email Address</label>
+<div class="font-body-lg text-body-lg text-primary">arthur.p@ledgemail.com</div>
+</div>
+<div class="notebook-line pb-2">
+<label class="font-label-caps text-label-caps text-[#1B2B44]/60 block mb-1">Timezone</label>
+<div class="font-body-lg text-body-lg text-primary">Greenwich Mean Time (GMT +0)</div>
+</div>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">settings_suggest</span>
+                            App Preferences
+                        </h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button class="flex items-center justify-between p-4 bg-white border border-[#1B2B44]/10 rounded-lg hover:shadow-md transition-shadow">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined opacity-60">dark_mode</span>
+<span class="font-body-md text-body-md">Dark Mode</span>
+</div>
+<div class="w-10 h-5 bg-[#1B2B44]/10 rounded-full relative">
+<div class="absolute left-1 top-1 w-3 h-3 bg-[#1B2B44] rounded-full"></div>
+</div>
+</button>
+<button class="flex items-center justify-between p-4 bg-white border border-[#1B2B44]/10 rounded-lg hover:shadow-md transition-shadow">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined opacity-60">notifications</span>
+<span class="font-body-md text-body-md">Daily Reminders</span>
+</div>
+<div class="w-10 h-5 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</button>
+<button class="flex items-center justify-between p-4 bg-white border border-[#1B2B44]/10 rounded-lg hover:shadow-md transition-shadow">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined opacity-60">lock</span>
+<span class="font-body-md text-body-md">Biometric Lock</span>
+</div>
+<div class="w-10 h-5 bg-[#1B2B44]/10 rounded-full relative">
+<div class="absolute left-1 top-1 w-3 h-3 bg-[#1B2B44] rounded-full"></div>
+</div>
+</button>
+<button class="flex items-center justify-between p-4 bg-white border border-[#1B2B44]/10 rounded-lg hover:shadow-md transition-shadow">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined opacity-60">font_download</span>
+<span class="font-body-md text-body-md">Dyslexic Font</span>
+</div>
+<div class="w-10 h-5 bg-[#1B2B44]/10 rounded-full relative">
+<div class="absolute left-1 top-1 w-3 h-3 bg-[#1B2B44] rounded-full"></div>
+</div>
+</button>
+</div>
+</div>
+</div>
+<div class="space-y-8">
+<div class="bg-primary p-6 rounded-xl text-white shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<div class="font-label-caps text-label-caps uppercase opacity-60 mb-1">Subscription</div>
+<h3 class="font-headline-md text-headline-md mb-2">Artisan Plan</h3>
+<p class="font-body-md text-body-md opacity-80 mb-6 italic">Next billing: Dec 12, 2024</p>
+<button class="w-full py-2 bg-white text-primary font-bold rounded-lg hover:bg-secondary-fixed transition-colors">Manage Subscription</button>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-9xl opacity-10 rotate-12" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="bg-[#FFF9F2] border border-[#1B2B44]/20 p-6 rounded-xl relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-8 bg-[#1B2B44]/10 rounded shadow-inner flex items-center justify-center">
+<div class="w-12 h-1 bg-white/50 rounded-full"></div>
+</div>
+<h4 class="font-headline-md text-headline-md mb-4 text-center">Data Export</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 text-center italic">Take your thoughts with you in PDF, Markdown, or JSON.</p>
+<button class="w-full py-3 border-2 border-[#1B2B44] border-dashed text-primary font-bold rounded-lg hover:bg-[#1B2B44]/5 transition-all">Export Archive</button>
+</div>
+</div>
+</section>
+<section class="mt-24">
+<div class="flex justify-between items-end mb-8 border-b-2 border-[#1B2B44]/20 pb-4">
+<div>
+<h2 class="font-headline-md text-headline-md flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">auto_stories</span>
+                            The Archives
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Revisit your past selves through the years.</p>
+</div>
+<button class="text-primary font-bold hover:underline flex items-center gap-2">
+                        View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+<div class="group cursor-pointer">
+<div class="bg-white border border-[#1B2B44]/20 p-1 rounded shadow-sm group-hover:shadow-md transition-all group-hover:-translate-y-1 mb-3">
+<img alt="Winter Journal" class="w-full h-40 object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="Top down view of an open fountain pen and ink bottle on a wooden desk with warm morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfP2VfPRzQeSHpEkyRiJBJ_5KB7HPFxiI_FaQa8ef3tAbSLIB7r0nFTvcoPTYvnAFIWsUikE7nQx1BHRSS4zodQrfzaNexo39_YKX3TxAAPDk0oMpdQJpi7iVGgtG_AYWJrHGZYxJht9a1Yiw39SCMND_pTZNKTvqiXZACNpkUih6L7BGqVM4-UjWrq4ue7ZRPWruHP8HQyVGCCwkfpymw5exrEsS5v3eCQjlP_QjuahGDo_t5hOL9Bks5CvSOCiSmNEHNRL7u3CM7"/>
+</div>
+<div class="font-headline-md text-lg">Winter 2023</div>
+<div class="font-label-caps text-xs opacity-50 uppercase">92 Entries • Complete</div>
+</div>
+<div class="group cursor-pointer">
+<div class="bg-white border border-[#1B2B44]/20 p-1 rounded shadow-sm group-hover:shadow-md transition-all group-hover:-translate-y-1 mb-3">
+<img alt="Autumn Journal" class="w-full h-40 object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="Drying autumn leaves pressed between pages of a weathered leather notebook" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARUhykya9X_1KsLlHGclTChqXGLCaoPYA4FDZGHd_1_n61ubaVL56sz91BPYDAl-ODb-QFsYcblAzPgX8t9lu5gIcwB9ufa1vF3yvMCnBJf50GbktGiRarEqeW15w3ffyOEb6Hhj3VG8oZLwqHhbXquwqxAKRKT19gSlHl7fJtXvcYw7idYCZU_JcQ6k4xOUxOlZgplCqBKLTjFsym8SQWEt0VAtFbEQMKGWRB_uPwcXPcwwuDBK3RCXtO-dpYaFYuO6OnPiyClx0K"/>
+</div>
+<div class="font-headline-md text-lg">Autumn 2023</div>
+<div class="font-label-caps text-xs opacity-50 uppercase">88 Entries • Complete</div>
+</div>
+<div class="group cursor-pointer">
+<div class="bg-white border border-[#1B2B44]/20 p-1 rounded shadow-sm group-hover:shadow-md transition-all group-hover:-translate-y-1 mb-3">
+<img alt="Summer Journal" class="w-full h-40 object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="Abstract sunlight patterns through a window blind falling on a clean white page of a diary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4vstveDUAWvG_pB4wYkGO9PJi2Is0v29_otEKj4sunqsmegFfc-8O_WYKgxX156Gf6DYpgs_iWw6NaChUF-QoJmaASATOELSXGZdJTRzvxN56a5p9wWcYBO-yx5rkFL8MMsJbT2C2Au4NP082i-ZQsx8pM_InwtiLQZIqGiuXo9khvdybcW8P4hTETuNPTF3h0bepWn46UNBO-BvJ8830O5-SR22Wsa9Gsd59Smh9loToxGv8Fnhnqa24JPTTy95hJ9pRDFjI5qaa"/>
+</div>
+<div class="font-headline-md text-lg">Summer 2023</div>
+<div class="font-label-caps text-xs opacity-50 uppercase">91 Entries • Complete</div>
+</div>
+<div class="group cursor-pointer">
+<div class="bg-white border border-[#1B2B44]/20 p-1 rounded shadow-sm group-hover:shadow-md transition-all group-hover:-translate-y-1 mb-3">
+<img alt="Spring Journal" class="w-full h-40 object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all" data-alt="Close up of neat handwriting in a journal with a small sprig of dried lavender resting on the spine" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeZi1haD4o8eNvN6hu28gf0gdhZ-qtdlhpHfxoVXwEEOWCLuSPuPbpuDij1T2Cf35rHBb36J2a0zetVt62aDejoJ0ONvj-t1ri4b9tcnORzIi-Tcy_HEwYriGwYj9VnZ86gsTlpItLrIiEfTPXI7TueTNBNx1UWSR3KhuVlvCvFqO96yUHx6I1mjwIPrCmuSTI2t5Gf6TfdG-PGSgHWk-0OKDrgK434WL3aHEbqoPlD9rzYnvey26tk52hYgOY_-XoExAwBbYFVR-x"/>
+</div>
+<div class="font-headline-md text-lg">Spring 2023</div>
+<div class="font-label-caps text-xs opacity-50 uppercase">90 Entries • Complete</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer class="w-full max-w-5xl mx-auto py-12 flex flex-col md:flex-row justify-between items-center px-8 border-t border-dashed border-[#1B2B44]/30">
+<div class="font-epilogue text-xs italic text-[#1B2B44]/50 dark:text-slate-500 mb-4 md:mb-0">
+            © 2024 Tactile AI Journaling. Crafted for mindfulness.
+        </div>
+<div class="flex gap-8">
+<a class="font-epilogue text-xs italic text-[#1B2B44]/50 hover:text-[#1B2B44] transition-colors underline font-bold" href="#">Export My Data</a>
+<a class="font-epilogue text-xs italic text-[#1B2B44]/50 hover:text-[#1B2B44] transition-colors" href="#">Privacy Scroll</a>
+<a class="font-epilogue text-xs italic text-[#1B2B44]/50 hover:text-[#1B2B44] transition-colors" href="#">Support</a>
+</div>
+</footer>
+</body></html>
