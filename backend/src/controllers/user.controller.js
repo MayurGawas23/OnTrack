@@ -27,7 +27,11 @@ export const RegisterUser = async (req, res) => {
         id: user._id
     }, process.env.JWT_SECRET)
 
-    res.cookie("token", token)
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+    });
 
     res.status(201).json({
         message: "User registered successfully",
@@ -106,7 +110,9 @@ export const getProfile = async (req, res) => {
 export const logout = (req, res) => {
     res.cookie('token', '', {
         httpOnly: true,
-        // expires: new Date(0)
+        secure: true,
+        sameSite: "None",
+        expires: new Date(0)
     });
     res.status(200).json({ message: "Logged out successfully" });
 }
