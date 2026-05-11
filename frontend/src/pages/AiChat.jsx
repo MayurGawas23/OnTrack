@@ -73,7 +73,7 @@ const AiChat = () => {
       <div className="absolute inset-0 pointer-events-none opacity-20 ruled-line"></div>
       
       {/* Chat Container */}
-      <ScrollArea className="flex-1 min-h-0 px-4 lg:px-8 py-12 relative z-10" ref={scrollRef}>
+      <ScrollArea className="flex-1 min-h-0 px-4 lg:px-8 py-12 relative z-10 " ref={scrollRef}>
         <div className="max-w-3xl mx-auto space-y-12">
           
           {/* Date Header */}
@@ -83,7 +83,7 @@ const AiChat = () => {
             </span>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-8 animate-in fade-in duration-500">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-4 items-start ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                 
@@ -170,15 +170,7 @@ const AiChat = () => {
               <span className="material-symbols-outlined">send</span>
             </button>
           </form>
-          <div className="mt-4 flex justify-between items-center text-[10px] font-newsreader font-bold uppercase tracking-widest text-tertiary px-2">
-            <div className="flex gap-4">
-              <button className="hover:text-primary transition-colors flex items-center gap-1">
-                <span className="material-symbols-outlined text-xs">attach_file</span>
-                Attach Scrap
-              </button>
-            </div>
-            <span>Ledger AI is processing your ink...</span>
-          </div>
+
         </div>
       </div>
       

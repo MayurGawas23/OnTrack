@@ -28,7 +28,7 @@ const Tracker = () => {
   const typingTimeoutRef = useRef(null);
 
   const [habitDialog, setHabitDialog] = useState(false);
-  const [newHabit, setNewHabit] = useState({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, goalId: '' });
+  const [newHabit, setNewHabit] = useState({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, customDate: '', goalId: '' });
 
   // ---------------------------------------------
 
@@ -201,9 +201,13 @@ const Tracker = () => {
 
   const handleSaveHabit = async () => {
     try {
+      if (newHabit.frequency === 'Custom Date' && !newHabit.customDate) {
+        alert("Please select a date for your custom habit.");
+        return;
+      }
       await api.post('/api/habits/create_habit', newHabit);
       setHabitDialog(false);
-      setNewHabit({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, goalId: '' });
+      setNewHabit({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, customDate: '', goalId: '' });
       fetchData();
     } catch (err) {
       console.error(err);
@@ -234,9 +238,9 @@ const Tracker = () => {
       <div className="absolute top-40 -right-20 w-64 h-64 border-[12px] border-tertiary/10 rounded-full coffee-stain"></div>
       <div className="absolute bottom-20 -left-10 w-40 h-40 border-[8px] border-tertiary/10 rounded-full coffee-stain"></div>
 
-      <section className="mb-12 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 ">
-        <div className=' '>
-          <h1 className="font-handwritten text-6xl md:text-7xl text-primary mb-2 capitalize"><span className='text-3xl font-epilogue tracking-tighter'>{greeting},</span><br /> {user?.username || 'User'}</h1>
+      <section className="mb-12 relative z-10 flex flex md:flex-row md:items-center justify-between gap-6 ">
+        <div className='animate-in fade-in duration-500 '>
+          <h1 className="font-handwritten text-5xl md:text-7xl text-primary mb-2 capitalize"><span className='text-3xl font-epilogue tracking-tighter'>{greeting},</span><br /> {user?.username || 'User'}</h1>
           <div className="flex items-center gap-3 font-epilogue text-tertiary tracking-wider">
             <span className="material-symbols-outlined text-sm">calendar_today</span>
             <span className="uppercase text-xs font-bold">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -245,12 +249,12 @@ const Tracker = () => {
 
           </div>
         </div>
-        <div className="bg-primary text-white p-4 rounded-lg relative overflow-hidden ink-bleed max-w-[60%]">
+        <div className="bg-primary text-white p-4 rounded-lg relative overflow-hidden ink-bleed max-w-[50%]">
           <div className="absolute top-0 right-0 p-4 opacity-20">
             <span className="material-symbols-outlined text-6xl">format_quote</span>
           </div>
           <p className="font-newsreader text-xs opacity-60 uppercase mb-4 tracking-widest">Quote of the day</p>
-          <p className="font-handwritten text-3xl leading-snug">"{quote}"</p>
+          <p className="font-handwritten text-2xl md:text-3xl leading-snug">"{quote}"</p>
         </div>
       </section>
 
@@ -282,7 +286,7 @@ const Tracker = () => {
                       <div className="flex justify-between relative  animate-none transition-none">
                         <Dialog open={habitDialog} onOpenChange={setHabitDialog} >
                           <DialogTrigger asChild className=''>
-                            <button className=" absolute animate-none transition-none right-0 -top-32 p-2 cursor-pointer bg-transparent border-2 border-primary text-primary font-epilogue font-bold uppercase py-2 flex items-center justify-center gap-3 hover:bg-primary hover:text-white  active:scale-95 ink-bleed">
+                            <button className="hidden md:flex absolute right-0 -top-32 p-2  items-center justify-center gap-3 cursor-pointer border-2 border-primary bg-transparent text-primary font-epilogue font-bold uppercase transition-none animate-none hover:bg-primary hover:text-white active:scale-95 ink-bleed">
                               <span className="material-symbols-outlined">add_circle</span>
                               New Entry
                             </button>
@@ -295,6 +299,28 @@ const Tracker = () => {
                               <Input className="border-primary bg-white rounded-none px-2" placeholder="Habit Title" value={newHabit.habit_title} onChange={e => setNewHabit({ ...newHabit, habit_title: e.target.value })} />
                               <Input className="border-primary bg-white rounded-none px-2" placeholder="Target (e.g., 20 mins)" value={newHabit.target_value} onChange={e => setNewHabit({ ...newHabit, target_value: e.target.value })} />
                               <Input className="border-primary bg-white rounded-none px-2" type="number" placeholder="Points" value={newHabit.points} onChange={e => setNewHabit({ ...newHabit, points: e.target.value })} />
+                              
+                              <Select value={newHabit.frequency} onValueChange={v => setNewHabit({ ...newHabit, frequency: v })}>
+                                <SelectTrigger className="border-primary bg-white rounded-none px-2">
+                                  <SelectValue placeholder="Frequency" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-secondary rounded-none">
+                                  <SelectItem value="Daily">Daily</SelectItem>
+                                  <SelectItem value="Weekly">Weekly</SelectItem>
+                                  <SelectItem value="Monthly">Monthly</SelectItem>
+                                  <SelectItem value="Custom Date">Custom Date</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              
+                              {newHabit.frequency === 'Custom Date' && (
+                                <Input 
+                                  type="date" 
+                                  className="border-primary bg-white rounded-none px-2" 
+                                  value={newHabit.customDate} 
+                                  onChange={e => setNewHabit({ ...newHabit, customDate: e.target.value })} 
+                                />
+                              )}
+
                               <Select value={newHabit.goalId || 'none'} onValueChange={v => setNewHabit({ ...newHabit, goalId: v === 'none' ? null : v })}>
                                 <SelectTrigger className="border-primary bg-white rounded-none px-2">
                                   <SelectValue placeholder="Select Goal" />
@@ -320,6 +346,14 @@ const Tracker = () => {
                         {habits.filter(h => !h.goalId && h.frequency === 'Monthly').length > 0 && (
                           <GoalSection key="independent_monthly" goal={{ _id: 'independent_monthly', title: 'Monthly Habits' }} habits={habits.filter(h => !h.goalId && h.frequency === 'Monthly').map(h => ({ ...h, goalId: 'independent_monthly' }))} onLogHabit={handleLogHabit} />
                         )} 
+                        {Array.from(new Set(habits.filter(h => !h.goalId && h.frequency === 'Custom Date').map(h => h.customDate || 'Unscheduled'))).map(date => (
+                          <GoalSection 
+                            key={`independent_custom_${date}`} 
+                            goal={{ _id: `independent_custom_${date}`, title: date !== 'Unscheduled' && date.includes('-') ? `${date.split('-')[2]}-${date.split('-')[1]}` : date }} 
+                            habits={habits.filter(h => !h.goalId && h.frequency === 'Custom Date' && (h.customDate || 'Unscheduled') === date).map(h => ({ ...h, goalId: `independent_custom_${date}` }))} 
+                            onLogHabit={handleLogHabit} 
+                          />
+                        ))}
                        </div>
                         <div className="">
                           {goals.map(goal => (
@@ -391,7 +425,7 @@ const Tracker = () => {
 
 
           <div className="bg-secondary border border-tertiary/20 p-6 rounded-lg shadow-[4px_4px_0px_rgba(112,112,112,0.1)] paper-texture flex flex-col gap-6">
-            <h3 className="font-newsreader uppercase tracking-widest font-bold text-xs text-tertiary border-b border-primary/10 pb-2">Daily Analytics</h3>
+            <h3 className="font-newsreader uppercase tracking-widest font-bold text-xs text-tertiary border-b border-primary/10 pb-2">Habit Analytics</h3>
             <div className="flex items-center justify-between">
               <div className="relative w-24 h-24 flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 80 80">
@@ -425,7 +459,7 @@ const Tracker = () => {
           </div>
           <div>
             {summary ? (
-              <div className="bg-secondary border border-tertiary/20 p-6 rounded-lg shadow-[4px_4px_0px_rgba(112,112,112,0.1)] paper-texture flex flex-col gap-6 min-h-[500px] ">
+              <div className="bg-secondary border border-tertiary/20 p-6 rounded-lg shadow-[4px_4px_0px_rgba(112,112,112,0.1)] paper-texture flex flex-col gap-6 min-h-[500px]  ">
                 <h3 className="font-newsreader uppercase tracking-widest font-bold text-xs text-tertiary border-b border-primary/10 pb-2">Fitness Summary</h3>
 
                 <div className="">
@@ -436,7 +470,7 @@ const Tracker = () => {
 
                     Coach's Note
                   </h3>
-                  <div className=" bg-white h-full p-4 -rotate-3 relative ruled-line marker-stroke  ">
+                  <div className=" bg-white h-full p-4 -rotate-3 relative ruled-line marker-stroke animate-in slide-in-from-bottom-10  duration-500 ">
                     <p className="font-handwritten text-2xl text-on-surface mt-5 line-height-[2rem]">{summary.summary}</p>
                     {/* tape */}
                     <div className="bg-zinc-300 h-8 w-1/4 -rotate-1 absolute -top-3 left-30 opacity-60"></div>

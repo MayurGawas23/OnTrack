@@ -43,7 +43,24 @@ const Profile = () => {
   const [habitDialog, setHabitDialog] = useState(false);
 
   const [currentGoal, setCurrentGoal] = useState({ title: '', description: '', targetDate: '' });
-  const [currentHabit, setCurrentHabit] = useState({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, goalId: '' });
+  const [currentHabit, setCurrentHabit] = useState({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, customDate: '', goalId: '' });
+
+  const formatDietText = (text) => {
+    if (!text) return { __html: '' };
+    let formatted = text
+        .replace(/^### (.*$)/gim, '<h3 class="font-epilogue font-bold text-lg text-primary mt-6 mb-2">$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2 class="font-epilogue font-bold text-xl text-primary mt-5 mb-2">$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1 class="font-epilogue font-bold text-2xl text-primary mt-4 mb-2">$1</h1>')
+        .replace(/^\s*[\*-]\s+(.*$)/gim, '<li class="ml-4 mb-1 list-disc marker:text-primary">$1</li>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="block mt-5 mb-1 text-primary text-base">$1</strong>')
+        .replace(/(?<!<[^>]*>)\*(.*?)\*(?![^<]*>)/g, '<em>$1</em>')
+        .replace(/[*#]/g, '') // Remove stray asterisks/hashes
+        .replace(/\n\s*\n/g, '<br />')
+        .replace(/\n/g, '<br />')
+        .replace(/(<\/h[1-3]>|<\/li>|<\/strong>)<br \/>/g, '$1')
+        .replace(/<br \/>(<h[1-3]>|<li|<strong)/g, '$1');
+    return { __html: formatted };
+  };
 
   const [fitnessProfile, setFitnessProfile] = useState({
     weight: '', height: '', fitnessGoal: '', activityLevel: '',
@@ -145,6 +162,10 @@ const Profile = () => {
 
   const handleSaveHabit = async () => {
     try {
+      if (currentHabit.frequency === 'Custom Date' && !currentHabit.customDate) {
+        alert("Please select a date for your custom habit.");
+        return;
+      }
       if (currentHabit._id) {
         await api.put(`/api/habits/${currentHabit._id}`, currentHabit);
       } else {
@@ -177,11 +198,11 @@ const Profile = () => {
   };
 
   const openNewHabit = (goalId = null) => {
-    setCurrentHabit({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, goalId: goalId || '' });
+    setCurrentHabit({ habit_title: '', target_value: '', frequency: 'Daily', points: 10, customDate: '', goalId: goalId || '' });
     setHabitDialog(true);
   };
   const openEditHabit = (h) => {
-    setCurrentHabit({ _id: h._id, habit_title: h.habit_title || h.name, target_value: h.target_value || h.target, frequency: h.frequency || 'Daily', points: h.points || 10, goalId: h.goalId || '' });
+    setCurrentHabit({ _id: h._id, habit_title: h.habit_title || h.name, target_value: h.target_value || h.target, frequency: h.frequency || 'Daily', customDate: h.customDate || '', points: h.points || 10, goalId: h.goalId || '' });
     setHabitDialog(true);
   };
 
@@ -264,16 +285,6 @@ const Profile = () => {
             <h1 className="font-epilogue text-4xl font-bold text-primary mb-1">{profile.username || 'User'}</h1>
             <p className="font-newsreader text-lg text-tertiary italic">"A life unexamined is not worth living."</p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="border-2 border-dashed border-primary/20 p-4 rounded-none">
-              <div className="font-newsreader uppercase font-bold text-xs text-tertiary tracking-widest mb-1">Active Goals</div>
-              <div className="font-epilogue text-2xl font-bold text-primary">{goals.length}</div>
-            </div>
-            <div className="border-2 border-dashed border-primary/20 p-4 rounded-none">
-              <div className="font-newsreader uppercase font-bold text-xs text-tertiary tracking-widest mb-1">Tracked Habits</div>
-              <div className="font-epilogue text-2xl font-bold text-primary">{habits.length}</div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -324,23 +335,10 @@ const Profile = () => {
                   <input type="number" value={profile.weight} onChange={(e) => setProfile({ ...profile, weight: e.target.value })} className="font-handwritten text-4xl text-primary border-none shadow-none bg-transparent p-0 focus-visible:ring-0" />
                 </div>
               </div>
-
-              {/* Stats Bar */}
-              <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-primary/10">
-                <div className="text-center p-4 bg-white border border-primary/10">
-                  <p className="font-newsreader text-xs uppercase tracking-widest text-tertiary">Active Goals</p>
-                  <p className="font-epilogue font-bold text-3xl text-primary">{goals.length}</p>
-                </div>
-                <div className="text-center p-4 bg-white border border-primary/10">
-                  <p className="font-newsreader text-xs uppercase tracking-widest text-tertiary">Active Habits</p>
-                  <p className="font-epilogue font-bold text-3xl text-primary">{habits.length}</p>
-                </div>
-              </div>
-
               {message && <p className="text-sm text-primary font-bold">{message}</p>}
               <div className="flex justify-end pt-4">
                 <Button type="submit" disabled={loading} className="bg-primary text-white rounded-none font-epilogue uppercase tracking-widest px-8 ink-bleed hover:bg-primary/90">
-                  {loading ? <Loader2 className="animate-spin mr-2" /> : <span className="material-symbols-outlined mr-2">save</span>} Save Ledger
+                  {loading ? <Loader2 className="animate-spin mr-2" /> : <span className="material-symbols-outlined mr-2">save</span>} Save
                 </Button>
               </div>
             </form>
@@ -387,7 +385,7 @@ const Profile = () => {
                               <li key={habit._id} className="flex justify-between items-center p-2 bg-secondary/30 border border-primary/10">
                                 <div>
                                   <p className="font-newsreader text-primary">{habit.habit_title || habit.name}</p>
-                                  <p className="text-xs text-tertiary italic">{habit.target_value || habit.target} • {habit.frequency} • {habit.points} pts</p>
+                                  <p className="text-xs text-tertiary italic">{habit.target_value || habit.target} • {habit.frequency === 'Custom Date' ? `Date: ${habit.customDate}` : habit.frequency} • {habit.points} pts</p>
                                 </div>
                                 <div className="flex gap-2">
                                   <Button onClick={() => openEditHabit(habit)} variant="outline" size="icon" className="h-6 w-6 rounded-none border-primary bg-white text-primary hover:bg-primary/10"><Edit2 size={12} /></Button>
@@ -428,7 +426,7 @@ const Profile = () => {
                   <li key={habit._id} className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-primary/10 py-4 gap-4">
                     <div>
                       <h4 className="font-bold text-lg text-primary font-newsreader">{habit.habit_title || habit.name}</h4>
-                      <p className="text-sm text-tertiary font-newsreader italic">Target: {habit.target_value || habit.target} | Freq: {habit.frequency} | Points: {habit.points || 10}</p>
+                      <p className="text-sm text-tertiary font-newsreader italic">Target: {habit.target_value || habit.target} | Freq: {habit.frequency === 'Custom Date' ? `Date: ${habit.customDate}` : habit.frequency} | Points: {habit.points || 10}</p>
                     </div>
                     <div className="flex gap-2">
                       <Button onClick={() => openEditHabit(habit)} variant="outline" size="icon" className="rounded-none border-primary bg-white text-primary hover:bg-primary/10"><Edit2 size={16} /></Button>
@@ -543,11 +541,44 @@ const Profile = () => {
                   </div>
                 </div>
                 <div className="bg-white p-6 border border-primary/10">
-                  <p className="font-epilogue font-bold text-lg text-primary border-b border-primary/10 pb-2 mb-4">Your AI Indian Budget Plan</p>
-                  <div className="font-newsreader whitespace-pre-wrap text-sm text-tertiary leading-relaxed">
-                    {fitnessProfile.dietPlan}
-                  </div>
+                  <p className="font-epilogue font-bold text-lg text-primary border-b border-primary/10 pb-2 mb-4">Your AI-Generated Plan</p>
+                  <div
+                    className="font-newsreader text-sm text-tertiary leading-relaxed"
+                    dangerouslySetInnerHTML={formatDietText(fitnessProfile.dietPlan)}
+                  />
                 </div>
+
+                {/* Past Plans (Inactive) */}
+                {fitnessProfile.pastPlans && fitnessProfile.pastPlans.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="font-epilogue font-bold text-xl text-primary border-b border-primary/10 pb-2 mb-4">Previous Plans</h3>
+                    <div className="space-y-4">
+                      {fitnessProfile.pastPlans.map((plan, idx) => (
+                        <div key={idx} className="bg-white/50 p-4 border border-tertiary/20 opacity-80">
+                          <p className="text-xs font-bold uppercase tracking-widest text-tertiary mb-2">Created: {new Date(plan.createdAt).toLocaleDateString()}</p>
+                          <div className="grid grid-cols-3 gap-2 mb-4">
+                            <div className="text-center">
+                              <p className="text-[10px] uppercase font-bold text-tertiary">Calories</p>
+                              <p className="font-epilogue text-sm text-primary">{plan.targetCalories}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[10px] uppercase font-bold text-tertiary">Protein</p>
+                              <p className="font-epilogue text-sm text-primary">{plan.targetProtein}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[10px] uppercase font-bold text-tertiary">Burn</p>
+                              <p className="font-epilogue text-sm text-primary">{plan.targetBurn}</p>
+                            </div>
+                          </div>
+                          <div
+                            className="font-newsreader text-xs text-tertiary leading-relaxed line-clamp-3"
+                            dangerouslySetInnerHTML={formatDietText(plan.dietPlan)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -629,46 +660,64 @@ const Profile = () => {
           </form>
         </DialogContent>
       </Dialog>
- 
-    
 
-      {/* Modals placed outside of Tabs to prevent unmounting issues */ }
+
+
+      {/* Modals placed outside of Tabs to prevent unmounting issues */}
       <Dialog open={goalDialog} onOpenChange={setGoalDialog}>
         <DialogContent className="bg-secondary paper-texture rounded-none border-2 border-primary ink-bleed">
-            <DialogHeader>
-                <DialogTitle className="font-epilogue font-bold text-primary">{currentGoal._id ? 'Edit Goal' : 'Create Goal'}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-                <Input className="border-primary bg-white rounded-none" placeholder="Title" value={currentGoal.title} onChange={e => setCurrentGoal({...currentGoal, title: e.target.value})} />
-                <Input className="border-primary bg-white rounded-none" placeholder="Description" value={currentGoal.description} onChange={e => setCurrentGoal({...currentGoal, description: e.target.value})} />
-                <Input className="border-primary bg-white rounded-none" type="date" value={currentGoal.targetDate} onChange={e => setCurrentGoal({...currentGoal, targetDate: e.target.value})} />
-                <Button onClick={handleSaveGoal} className="w-full bg-primary text-white rounded-none font-epilogue uppercase tracking-widest">Save Goal</Button>
-            </div>
+          <DialogHeader>
+            <DialogTitle className="font-epilogue font-bold text-primary">{currentGoal._id ? 'Edit Goal' : 'Create Goal'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <Input className="border-primary bg-white rounded-none" placeholder="Title" value={currentGoal.title} onChange={e => setCurrentGoal({ ...currentGoal, title: e.target.value })} />
+            <Input className="border-primary bg-white rounded-none" placeholder="Description" value={currentGoal.description} onChange={e => setCurrentGoal({ ...currentGoal, description: e.target.value })} />
+            <Button onClick={handleSaveGoal} className="w-full bg-primary text-white rounded-none font-epilogue uppercase tracking-widest">Save Goal</Button>
+          </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={habitDialog} onOpenChange={setHabitDialog}>
         <DialogContent className="bg-secondary paper-texture rounded-none border-2 border-primary ink-bleed">
-            <DialogHeader>
-                <DialogTitle className="font-epilogue font-bold text-primary">{currentHabit._id ? 'Edit Habit' : 'Create Habit'}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-                <Input className="border-primary bg-white rounded-none" placeholder="Habit Title" value={currentHabit.habit_title} onChange={e => setCurrentHabit({...currentHabit, habit_title: e.target.value})} />
-                <Input className="border-primary bg-white rounded-none" placeholder="Target (e.g., 20 mins)" value={currentHabit.target_value} onChange={e => setCurrentHabit({...currentHabit, target_value: e.target.value})} />
-                <Input className="border-primary bg-white rounded-none" type="number" placeholder="Points" value={currentHabit.points} onChange={e => setCurrentHabit({...currentHabit, points: e.target.value})} />
-                <Select value={currentHabit.goalId || 'none'} onValueChange={v => setCurrentHabit({...currentHabit, goalId: v === 'none' ? null : v})}>
-                    <SelectTrigger className="border-primary bg-white rounded-none">
-                        <SelectValue placeholder="Select Goal" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-secondary rounded-none">
-                        <SelectItem value="none">No Goal (Independent)</SelectItem>
-                        {goals.map(g => (
-                            <SelectItem key={g._id} value={g._id}>{g.goal_title || g.title}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                <Button onClick={handleSaveHabit} className="w-full bg-primary text-white rounded-none font-epilogue uppercase tracking-widest">Save Habit</Button>
-            </div>
+          <DialogHeader>
+            <DialogTitle className="font-epilogue font-bold text-primary">{currentHabit._id ? 'Edit Habit' : 'Create Habit'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <Input className="border-primary bg-white rounded-none" placeholder="Habit Title" value={currentHabit.habit_title} onChange={e => setCurrentHabit({ ...currentHabit, habit_title: e.target.value })} />
+            <Input className="border-primary bg-white rounded-none" placeholder="Target (e.g., 20 mins)" value={currentHabit.target_value} onChange={e => setCurrentHabit({ ...currentHabit, target_value: e.target.value })} />
+            <Input className="border-primary bg-white rounded-none" type="number" placeholder="Points" value={currentHabit.points} onChange={e => setCurrentHabit({ ...currentHabit, points: e.target.value })} />
+            <Select value={currentHabit.frequency} onValueChange={v => setCurrentHabit({ ...currentHabit, frequency: v })}>
+              <SelectTrigger className="border-primary bg-white rounded-none">
+                <SelectValue placeholder="Frequency" />
+              </SelectTrigger>
+              <SelectContent className="bg-secondary rounded-none">
+                <SelectItem value="Daily">Daily</SelectItem>
+                <SelectItem value="Weekly">Weekly</SelectItem>
+                <SelectItem value="Monthly">Monthly</SelectItem>
+                <SelectItem value="Custom Date">Custom Date</SelectItem>
+              </SelectContent>
+            </Select>
+            {currentHabit.frequency === 'Custom Date' && (
+              <Input
+                className="border-primary bg-white rounded-none"
+                type="date"
+                value={currentHabit.customDate}
+                onChange={e => setCurrentHabit({ ...currentHabit, customDate: e.target.value })}
+              />
+            )}
+            <Select value={currentHabit.goalId || 'none'} onValueChange={v => setCurrentHabit({ ...currentHabit, goalId: v === 'none' ? null : v })}>
+              <SelectTrigger className="border-primary bg-white rounded-none">
+                <SelectValue placeholder="Select Goal" />
+              </SelectTrigger>
+              <SelectContent className="bg-secondary rounded-none">
+                <SelectItem value="none">No Goal (Independent)</SelectItem>
+                {goals.map(g => (
+                  <SelectItem key={g._id} value={g._id}>{g.goal_title || g.title}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button onClick={handleSaveHabit} className="w-full bg-primary text-white rounded-none font-epilogue uppercase tracking-widest">Save Habit</Button>
+          </div>
         </DialogContent>
       </Dialog>
     </main >

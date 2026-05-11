@@ -1,7 +1,7 @@
 import HabitModel from "../models/habit.model.js";
 
 export const createHabit = async (req, res) =>{
-    const { habit_title , frequency, target_value , goalId, points } =  req.body
+    const { habit_title , frequency, target_value , goalId, points, customDate } =  req.body
     const user = req.userId
     
     try {
@@ -10,6 +10,7 @@ export const createHabit = async (req, res) =>{
             user,
             habit_title,
             frequency,
+            customDate,
             target_value,
             goalId: goalId || null,
             points
@@ -83,11 +84,11 @@ export const saveHabits = async (req, res) => {
 export const updateHabit = async (req, res) => {
     try {
         const { id } = req.params;
-        const { habit_title, frequency, target_value, points } = req.body;
+        const { habit_title, frequency, target_value, points, customDate } = req.body;
         
         const habit = await HabitModel.findOneAndUpdate(
             { _id: id, user: req.userId },
-            { habit_title, frequency, target_value, points },
+            { habit_title, frequency, customDate, target_value, points },
             { returnDocument: 'after' }
         );
         

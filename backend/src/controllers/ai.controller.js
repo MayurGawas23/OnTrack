@@ -111,7 +111,7 @@ export const generateDietPlan = async (req, res) => {
             apiKey: process.env.GEMINI_API_KEY,
         });
 
-        const prompt = `
+const prompt = `
 You are an expert fitness coach and nutritionist.
 
 User Profile:
@@ -122,12 +122,19 @@ User Profile:
 - Sleep: ${sleepHours} hours
 - Diet Preferences: ${dietPreferences}
 
-Generate a strictly Indian budget diet plan tailored to this user. DO NOT use fancy or expensive foods. Use affordable, everyday Indian ingredients.
+Based on the user's activity level and fitness goal, first recommend some basic activities (like strength training, daily steps, cardio).
+Then, generate a strictly Indian budget diet plan tailored to this user. DO NOT use fancy or expensive foods. Use affordable, everyday Indian ingredients.
 Calculate the target daily calories to intake, the target daily calories to burn (via workout), and the target daily protein intake (in grams).
 
-Output ONLY a JSON object with this exact structure (No markdown or backticks):
+FORMATTING RULES:
+- Use clear Markdown formatting.
+- Differentiate meals (Breakfast, Lunch, Dinner, Snacks) with bold titles (e.g. **Breakfast:**).
+- Use bullet points for the recommended activities and the food items.
+- Ensure the output is highly readable and well-structured.
+
+Output ONLY a JSON object with this exact structure (No markdown code blocks or backticks wrapping the JSON itself, just the raw JSON):
 {
-  "dietPlan": "String containing the structured daily diet plan (breakfast, lunch, dinner, snacks).",
+  "dietPlan": "String containing the markdown formatted structured daily diet plan and recommended basic activities.",
   "targetCalories": 2000,
   "targetBurn": 500,
   "targetProtein": 120

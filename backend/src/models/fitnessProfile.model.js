@@ -16,7 +16,14 @@ const fitnessProfileSchema = new mongoose.Schema({
     dietPlan: { type: String }, // AI generated JSON string or text
     targetCalories: { type: Number },
     targetProtein: { type: Number },
-    targetBurn: { type: Number }
+    targetBurn: { type: Number },
+    pastPlans: [{
+        dietPlan: { type: String },
+        targetCalories: { type: Number },
+        targetProtein: { type: Number },
+        targetBurn: { type: Number },
+        createdAt: { type: Date, default: Date.now }
+    }]
 }, { timestamps: true });
 
 const fitnessProfileModel = mongoose.model('fitnessProfile', fitnessProfileSchema);

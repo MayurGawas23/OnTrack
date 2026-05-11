@@ -16,11 +16,11 @@ const HabitCard = ({ habit, onLog }) => {
         )}
       </div>
       <div className="flex flex-col bg-ambqer-300">
-        <span className={`font-handwritten text-3xl  ${isCompleted ? 'strikethrough opacity-60 text-tertiary' : 'text-black'}`}>
+        <span className={`font-handwritten text-2xl md:text-3xl  ${isCompleted ? 'strikethrough opacity-60 text-tertiary' : 'text-black'}`}>
           {habit.habit_title || habit.name}
         </span>
         <span className="text-xs text-tertiary font-newsreader italic">
-          Target: {habit.target_value || habit.target} {habit.frequency ? `| ${habit.frequency}` : ''} • {habit.streak || 0} Streak
+          Target: {habit.target_value || habit.target} {habit.frequency ? (habit.frequency === 'Custom Date' ? `| Date: ${habit.customDate && habit.customDate.includes('-') ? `${habit.customDate.split('-')[2]}-${habit.customDate.split('-')[1]}` : habit.customDate}` : `| ${habit.frequency}`) : ''}
         </span>
       </div>
     </div>

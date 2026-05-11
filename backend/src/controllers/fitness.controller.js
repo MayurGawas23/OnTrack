@@ -38,9 +38,25 @@ export const saveFitnessProfile = async (req, res) => {
         const userId = req.userId;
         const { weight, height, fitnessGoal, activityLevel, sleepHours, dietPreferences, dietPlan, targetCalories, targetProtein, targetBurn } = req.body;
 
+        const existingProfile = await fitnessProfileModel.findOne({ userId });
+
+        let updateData = { weight, height, fitnessGoal, activityLevel, sleepHours, dietPreferences, dietPlan, targetCalories, targetProtein, targetBurn };
+
+        if (existingProfile && existingProfile.dietPlan && existingProfile.dietPlan !== dietPlan) {
+            updateData.$push = {
+                pastPlans: {
+                    dietPlan: existingProfile.dietPlan,
+                    targetCalories: existingProfile.targetCalories,
+                    targetProtein: existingProfile.targetProtein,
+                    targetBurn: existingProfile.targetBurn,
+                    createdAt: existingProfile.updatedAt || new Date()
+                }
+            };
+        }
+
         const profile = await fitnessProfileModel.findOneAndUpdate(
             { userId },
-            { weight, height, fitnessGoal, activityLevel, sleepHours, dietPreferences, dietPlan, targetCalories, targetProtein, targetBurn },
+            updateData,
             { new: true, upsert: true }
         );
 

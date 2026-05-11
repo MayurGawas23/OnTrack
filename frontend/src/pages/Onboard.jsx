@@ -38,7 +38,7 @@ const Onboard = () => {
     const [goalDialogOpen, setGoalDialogOpen] = useState(false)
 
     // Current inputs
-    const [newHabit, setNewHabit] = useState({ name: '', target: '', frequency: 'Daily', points: 10, targetGoalIndex: null, editIndex: null })
+    const [newHabit, setNewHabit] = useState({ name: '', target: '', frequency: 'Daily', points: 10, customDate: '', targetGoalIndex: null, editIndex: null })
     const [newGoal, setNewGoal] = useState({ title: '', description: '', targetDate: '' })
 
     const handleSaveGoal = () => {
@@ -50,10 +50,15 @@ const Onboard = () => {
 
     const handleSaveHabit = () => {
         if (!newHabit.name) return;
+        if (newHabit.frequency === 'Custom Date' && !newHabit.customDate) {
+            alert("Please select a date for your custom habit.");
+            return;
+        }
         const habitToSave = {
             name: newHabit.name,
             target: newHabit.target,
             frequency: newHabit.frequency || 'Daily',
+            customDate: newHabit.frequency === 'Custom Date' ? newHabit.customDate : '',
             points: newHabit.points || 10,
             approved: true
         };
@@ -84,10 +89,27 @@ const Onboard = () => {
         if (existingHabit) {
             setNewHabit({ ...existingHabit, targetGoalIndex: goalIndex, editIndex: habitIndex });
         } else {
-            setNewHabit({ name: '', target: '', frequency: 'Daily', points: 10, targetGoalIndex: goalIndex, editIndex: null });
+            setNewHabit({ name: '', target: '', frequency: 'Daily', points: 10, customDate: '', targetGoalIndex: goalIndex, editIndex: null });
         }
         setHabitDialogOpen(true);
     }
+
+    const formatDietText = (text) => {
+        if (!text) return { __html: '' };
+        let formatted = text
+            .replace(/^### (.*$)/gim, '<h3 class="font-epilogue font-bold text-lg text-primary mt-6 mb-2">$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2 class="font-epilogue font-bold text-xl text-primary mt-5 mb-2">$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1 class="font-epilogue font-bold text-2xl text-primary mt-4 mb-2">$1</h1>')
+            .replace(/^\s*[\*-]\s+(.*$)/gim, '<li class="ml-4 mb-1 list-disc marker:text-primary">$1</li>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="block mt-5 mb-1 text-primary text-base">$1</strong>')
+            .replace(/(?<!<[^>]*>)\*(.*?)\*(?![^<]*>)/g, '<em>$1</em>')
+            .replace(/[*#]/g, '') // Remove stray asterisks/hashes
+            .replace(/\n\s*\n/g, '<br />')
+            .replace(/\n/g, '<br />')
+            .replace(/(<\/h[1-3]>|<\/li>|<\/strong>)<br \/>/g, '$1')
+            .replace(/<br \/>(<h[1-3]>|<li|<strong)/g, '$1');
+        return { __html: formatted };
+    };
 
     const handleGenerateAI = async (goalIndex) => {
         const goal = goals[goalIndex];
@@ -167,6 +189,7 @@ const Onboard = () => {
                     habit_title: h.name,
                     target_value: h.target,
                     frequency: h.frequency,
+                    customDate: h.customDate,
                     points: h.points
                 });
             }
@@ -187,6 +210,7 @@ const Onboard = () => {
                         habit_title: h.name,
                         target_value: h.target,
                         frequency: h.frequency,
+                        customDate: h.customDate,
                         points: h.points,
                         goalId: createdGoalId
                     });
@@ -275,7 +299,7 @@ const Onboard = () => {
                                     <div key={index} className="flex items-center justify-between p-3 border border-primary/20 bg-white">
                                         <div>
                                             <p className="font-newsreader text-lg text-primary">{habit.name}</p>
-                                            <p className="text-sm text-tertiary italic">{habit.target} • {habit.frequency} • {habit.points} pts</p>
+                                            <p className="text-sm text-tertiary italic">{habit.target} • {habit.frequency === 'Custom Date' ? `Date: ${habit.customDate}` : habit.frequency} • {habit.points} pts</p>
                                         </div>
                                         <div className="flex gap-2">
                                             <button
@@ -360,7 +384,7 @@ const Onboard = () => {
                                                     <div key={hIndex} className={`flex items-center justify-between p-2 border ${habit.approved === false ? 'border-red-800/50 bg-red-50 opacity-50' : 'border-primary/10'} bg-secondary/30`}>
                                                         <div>
                                                             <p className="font-newsreader text-primary">{habit.name}</p>
-                                                            <p className="text-xs text-tertiary italic">{habit.target} • {habit.frequency} • {habit.points} pts</p>
+                                                            <p className="text-xs text-tertiary italic">{habit.target} • {habit.frequency === 'Custom Date' ? `Date: ${habit.customDate}` : habit.frequency} • {habit.points} pts</p>
                                                         </div>
                                                         <div className="flex gap-1">
                                                             {habit.approved === undefined && (
@@ -499,7 +523,7 @@ const Onboard = () => {
 
                         {generatedDiet && (
                             <div className="mt-6 p-4 border border-primary/20 bg-white">
-                                <p className="font-epilogue font-bold text-lg text-primary border-b border-primary/10 pb-2 mb-2">Your AI Indian Budget Diet</p>
+                                <p className="font-epilogue font-bold text-lg text-primary border-b border-primary/10 pb-2 mb-2">Your AI-Generated Plan</p>
                                 <div className="grid grid-cols-3 gap-4 mb-4 mt-4">
                                     <div className="bg-secondary/50 p-2 text-center border border-primary/10">
                                         <p className="text-xs uppercase font-bold text-tertiary">Daily Calories</p>
@@ -514,9 +538,10 @@ const Onboard = () => {
                                         <p className="font-epilogue font-bold text-primary">{generatedDiet.targetBurn} kcal</p>
                                     </div>
                                 </div>
-                                <div className="font-newsreader whitespace-pre-wrap text-sm text-tertiary leading-relaxed">
-                                    {generatedDiet.dietPlan}
-                                </div>
+                                <div 
+                                    className="font-newsreader text-sm text-tertiary leading-relaxed"
+                                    dangerouslySetInnerHTML={formatDietText(generatedDiet.dietPlan)}
+                                />
                             </div>
                         )}
                     </div>
@@ -560,8 +585,17 @@ const Onboard = () => {
                                     <SelectItem value="Daily" className="px-1">Daily</SelectItem>
                                     <SelectItem value="Weekly" className="px-1">Weekly</SelectItem>
                                     <SelectItem value="Monthly" className="px-1">Monthly</SelectItem>
+                                    <SelectItem value="Custom Date" className="px-1">Custom Date</SelectItem>
                                 </SelectContent>
                             </Select>
+                            {newHabit.frequency === 'Custom Date' && (
+                                <Input 
+                                    type="date" 
+                                    className="border-primary bg-white rounded-none px-1" 
+                                    value={newHabit.customDate} 
+                                    onChange={e => setNewHabit({ ...newHabit, customDate: e.target.value })} 
+                                />
+                            )}
                             <Button onClick={handleSaveHabit} className="w-full bg-primary text-white rounded-none font-epilogue uppercase tracking-widest">Save Habit</Button>
                         </div>
                     </DialogContent>
