@@ -63,7 +63,9 @@ TrackIt is a full-stack **AI-powered fitness and habit tracking application** th
 
 ## 📸 Screenshots
 
-> *(Add your screenshots here for better impact)*
+<img width="1920" height="1080" alt="collage" src="https://github.com/user-attachments/assets/48e13ef7-6c6d-45a1-bf38-54e8cc7ac8de" />
+
+
 
 ---
 
