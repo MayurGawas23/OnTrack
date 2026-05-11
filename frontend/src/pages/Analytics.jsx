@@ -259,7 +259,7 @@ d.setDate(d.getDate() - (6 - i));
 
         <div className="bg-secondary p-8 border border-tertiary/20 rounded-none shadow-[4px_4px_0px_rgba(112,112,112,0.1)] relative paper-texture min-h-[400px]">
           <h2 className="font-epilogue font-bold text-2xl text-primary border-b-2 border-dashed border-tertiary/30 pb-2 mb-8 flex items-center justify-between">
-            <span>Fitness Logs</span>
+            <span>Daily Logs</span>
             <span className="material-symbols-outlined text-tertiary/50">fitness_center</span>
           </h2>
 
